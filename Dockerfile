@@ -1,14 +1,15 @@
-FROM devopsftw/baseimage:0.2.2
+FROM devopsftw/baseimage:0.4.0
 MAINTAINER Alex Salt <alex.salt@e96.ru>
 
 ENV DEBIAN_FRONTEND noninteractive
+ENV PERCONA_VERSION 0.1-7
 
 # install percona xtradb cluster
-RUN curl -sL https://repo.percona.com/apt/percona-release_0.1-4.$(lsb_release -sc)_all.deb -o /tmp/percona-release.deb && \
+RUN curl -sL https://repo.percona.com/apt/percona-release_{$PERCONA_VERSION}.$(lsb_release -sc)_all.deb -o /tmp/percona-release.deb && \
     dpkg -i /tmp/percona-release.deb && \
     apt-get update -qq && \
     apt-get -y --no-install-recommends install \
-    qpress percona-xtradb-cluster-56
+    qpress percona-xtradb-cluster-57
 
 # install galera-healthcheck
 RUN curl -sL https://github.com/sttts/galera-healthcheck/releases/download/v20150303/galera-healthcheck_linux_amd64 -o /bin/galera-healthcheck && \

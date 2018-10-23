@@ -10,7 +10,7 @@ case "$1" in
 	seed)
 		# bootstrapping
 		if [ ! -f /var/lib/mysql/skip-cluster-bootstrapping ]; then
-			mysql_install_db
+			mysqld --initialize --basedir=/var/lib/mysql --datadir=/var/lib/mysql/data
 			if [ -z "$MYSQL_ROOT_PASSWORD" ]; then
 				MYSQL_ROOT_PASSWORD=$(openssl rand -base64 32)
 				echo "MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD"
@@ -19,8 +19,8 @@ case "$1" in
 			cat >/tmp/bootstrap.sql <<EOF
 CREATE USER 'xtrabackup'@'127.0.0.1' IDENTIFIED BY '$XTRABACKUP_PASSWORD';
 CREATE USER 'xtrabackup'@'localhost' IDENTIFIED BY '$XTRABACKUP_PASSWORD';
-GRANT RELOAD,LOCK TABLES,REPLICATION CLIENT ON *.* TO 'xtrabackup'@'127.0.0.1';
-GRANT RELOAD,LOCK TABLES,REPLICATION CLIENT ON *.* TO 'xtrabackup'@'localhost';
+GRANT RELOAD,PROCESS,LOCK TABLES,REPLICATION CLIENT ON *.* TO 'xtrabackup'@'127.0.0.1';
+GRANT RELOAD,PROCESS,LOCK TABLES,REPLICATION CLIENT ON *.* TO 'xtrabackup'@'localhost';
 CREATE USER 'clustercheck'@'127.0.0.1' IDENTIFIED BY '$CLUSTERCHECK_PASSWORD';
 GRANT PROCESS ON *.* TO 'clustercheck'@'127.0.0.1';
 CREATE USER 'root'@'%' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD';
