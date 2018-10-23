@@ -32,6 +32,9 @@ ENV CLUSTER_NAME cluster
 COPY elect /opt/elect
 RUN pip install -r /opt/elect/requirements.txt
 
+# consul config
+COPY config/consul.json /etc/consul/consul.json
+
 # set up services
 COPY init/ /etc/my_init.d/
 COPY services/elect.sh /etc/service/elect/run
