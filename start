@@ -10,7 +10,7 @@ case "$1" in
 	seed)
 		# bootstrapping
 		if [ ! -f /var/lib/mysql/skip-cluster-bootstrapping ]; then
-			mysqld --initialize --basedir=/var/lib/mysql --datadir=/var/lib/mysql/data
+			mysqld --initialize --basedir=/usr --datadir=/var/lib/mysql
 			if [ -z "$MYSQL_ROOT_PASSWORD" ]; then
 				MYSQL_ROOT_PASSWORD=$(openssl rand -base64 32)
 				echo "MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD"
@@ -31,6 +31,8 @@ EOF
 			touch /var/lib/mysql/skip-cluster-bootstrapping
 
 			echo -n "Bootstrapping cluster. "
+                else
+                    sed -i 's/safe_to_bootstrap: 0/safe_to_bootstrap: 1/g' /var/lib/mysql/grastate.dat
 		fi
 
 		MYSQL_MODE_ARGS+=" --wsrep-new-cluster"
