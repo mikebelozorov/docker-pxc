@@ -31,7 +31,9 @@ EOF
 			touch /var/lib/mysql/skip-cluster-bootstrapping
 
 			echo -n "Bootstrapping cluster. "
-                else
+                fi
+
+                if [ -d /var/lib/mysql/mysql ]; then
                     sed -i 's/safe_to_bootstrap: 0/safe_to_bootstrap: 1/g' /var/lib/mysql/grastate.dat
 		fi
 
@@ -80,7 +82,7 @@ trap shutdown TERM INT
 	--wsrep_cluster_name="$CLUSTER_NAME" \
 	--wsrep_cluster_address="gcomm://$QCOMM" \
 	--wsrep_sst_auth="xtrabackup:$XTRABACKUP_PASSWORD" \
-	--default-time-zone="+05:00" \
+	--default-time-zone="+00:00" \
 	"$@" 2>&1 &
 wait $!
 RC=$?
